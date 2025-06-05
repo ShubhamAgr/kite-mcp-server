@@ -84,15 +84,15 @@ If you want to use the hosted version, you can use the following config:
 | `GetOrderCharges()`          | [ ]                | Not yet implemented                             |
 | **GTT Orders**               |                    |                                                 |
 | `GetGTTs()`                  | [x]                | Implemented as `get_gtts` tool                  |
-| `GetGTT()`                   | [ ]                | Not yet implemented                             |
+| `GetGTT()`                   | [x]                | Implemented as `get_gtt` tool                   |
 | `PlaceGTT()`                 | [x]                | Implemented as `place_gtt_order` tool           |
 | `ModifyGTT()`                | [x]                | Implemented as `modify_gtt_order` tool          |
 | `DeleteGTT()`                | [x]                | Implemented as `delete_gtt_order` tool          |
 | **Market Data Methods**      |                    |                                                 |
 | `GetQuote()`                 | [x]                | Implemented as `get_quotes` tool                |
 | `GetHistoricalData()`        | [x]                | Implemented as `get_historical_data` tool       |
-| `GetLTP()`                   | [ ]                | Not yet implemented                             |
-| `GetOHLC()`                  | [ ]                | Not yet implemented                             |
+| `GetLTP()`                   | [x]                | Implemented as `get_ltp` tool                   |
+| `GetOHLC()`                  | [x]                | Implemented as `get_ohlc` tool                  |
 | `GetInstruments()`           | [-]                | Won't implement. Use `instruments_search` tool. |
 | `GetInstrumentsByExchange()` | [-]                | Won't implement                                 |
 | `GetAuctionInstruments()`    | [ ]                | Not yet implemented                             |
