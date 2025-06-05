@@ -24,12 +24,15 @@ var (
 		&TradesTool{},
 		&OrdersTool{},
 		&GTTOrdersTool{},
+		&GTTTool{},
 		&MFHoldingsTool{},
 
 		// Tools for market data
 		&QuotesTool{},
 		&InstrumentsSearchTool{},
 		&HistoricalDataTool{},
+		&LTPTool{},
+		&OHLCTool{},
 
 		// Tools that post data to Kite Connect
 		&PlaceOrderTool{},

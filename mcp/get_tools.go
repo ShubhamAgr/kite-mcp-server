@@ -326,3 +326,52 @@ func (*GTTOrdersTool) Handler(manager *kc.Manager) server.ToolHandlerFunc {
 		}, nil
 	}
 }
+
+type GTTTool struct{}
+
+func (*GTTTool) Tool() mcp.Tool {
+	return mcp.NewTool("get_gtt",
+		mcp.WithDescription("Get a single GTT order by trigger ID"),
+		mcp.WithNumber("trigger_id",
+			mcp.Description("Trigger ID of the GTT order"),
+			mcp.Required(),
+		),
+	)
+}
+
+func (*GTTTool) Handler(manager *kc.Manager) server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		sess := server.ClientSessionFromContext(ctx)
+
+		kc, err := manager.GetSession(sess.SessionID())
+		if err != nil {
+			log.Println("error getting session", err)
+			return nil, err
+		}
+
+		args := request.Params.Arguments
+		triggerID := assertInt(args["trigger_id"])
+
+		gtt, err := kc.Kite.Client.GetGTT(triggerID)
+		if err != nil {
+			log.Println("error getting GTT order", err)
+			return nil, err
+		}
+
+		v, err := json.Marshal(gtt)
+		if err != nil {
+			log.Println("error marshalling GTT order", err)
+			return nil, err
+		}
+
+		gttJSON := string(v)
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{
+				mcp.TextContent{
+					Type: "text",
+					Text: gttJSON,
+				},
+			},
+		}, nil
+	}
+}

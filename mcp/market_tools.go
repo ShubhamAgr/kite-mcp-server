@@ -258,3 +258,107 @@ func (*HistoricalDataTool) Handler(manager *kc.Manager) server.ToolHandlerFunc {
 		}, nil
 	}
 }
+
+type LTPTool struct{}
+
+func (*LTPTool) Tool() mcp.Tool {
+	return mcp.NewTool("get_ltp",
+		mcp.WithDescription("Get last traded price for instruments"),
+		mcp.WithArray("instruments",
+			mcp.Description("Eg. ['NSE:INFY', 'NSE:SBIN']"),
+			mcp.Required(),
+			mcp.Items(map[string]any{
+				"type": "string",
+			}),
+		),
+	)
+}
+
+func (*LTPTool) Handler(manager *kc.Manager) server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		sess := server.ClientSessionFromContext(ctx)
+
+		kc, err := manager.GetSession(sess.SessionID())
+		if err != nil {
+			log.Println("error getting session", err)
+			return nil, err
+		}
+
+		args := request.Params.Arguments
+		instruments := assertStringArray(args["instruments"])
+
+		ltpData, err := kc.Kite.Client.GetLTP(instruments...)
+		if err != nil {
+			log.Println("error getting LTP", err)
+			return nil, err
+		}
+
+		v, err := json.Marshal(ltpData)
+		if err != nil {
+			log.Println("error marshalling LTP data", err)
+			return nil, err
+		}
+
+		ltpJSON := string(v)
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{
+				mcp.TextContent{
+					Type: "text",
+					Text: ltpJSON,
+				},
+			},
+		}, nil
+	}
+}
+
+type OHLCTool struct{}
+
+func (*OHLCTool) Tool() mcp.Tool {
+	return mcp.NewTool("get_ohlc",
+		mcp.WithDescription("Get OHLC data for instruments"),
+		mcp.WithArray("instruments",
+			mcp.Description("Eg. ['NSE:INFY', 'NSE:SBIN']"),
+			mcp.Required(),
+			mcp.Items(map[string]any{
+				"type": "string",
+			}),
+		),
+	)
+}
+
+func (*OHLCTool) Handler(manager *kc.Manager) server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		sess := server.ClientSessionFromContext(ctx)
+
+		kc, err := manager.GetSession(sess.SessionID())
+		if err != nil {
+			log.Println("error getting session", err)
+			return nil, err
+		}
+
+		args := request.Params.Arguments
+		instruments := assertStringArray(args["instruments"])
+
+		ohlcData, err := kc.Kite.Client.GetOHLC(instruments...)
+		if err != nil {
+			log.Println("error getting OHLC", err)
+			return nil, err
+		}
+
+		v, err := json.Marshal(ohlcData)
+		if err != nil {
+			log.Println("error marshalling OHLC data", err)
+			return nil, err
+		}
+
+		ohlcJSON := string(v)
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{
+				mcp.TextContent{
+					Type: "text",
+					Text: ohlcJSON,
+				},
+			},
+		}, nil
+	}
+}
